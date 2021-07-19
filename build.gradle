@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id "io.qameta.allure" version "2.8.1"
+}
+
+repositories {
+    mavenCentral()
+}
+
+def allureVersion = "2.13.8",
+    junitVersion = "5.7.1"
+
+allure {
+    version = allureVersion
+    aspectjweaver = true
+    autoconfigure = true
+    configuration = "testImplementation"
+    useJUnit5 {
+        version = allureVersion
+    }
+}
+
+dependencies {
+    testImplementation (
+            "org.junit.jupiter:junit-jupiter-api:$junitVersion",
+            "org.aspectj:aspectjweaver:1.9.6",
+            "io.qameta.allure:allure-selenide:$allureVersion",
+            "org.aeonbits.owner:owner:1.0.12",
+            "io.rest-assured:rest-assured:4.4.0"
+    )
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties(System.getProperties())
+}
+
+tasks.withType(Test) {
+    systemProperties(System.getProperties())
+    testLogging {
+        events "STANDARD_OUT"
+    }
+}
